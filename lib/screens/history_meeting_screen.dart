@@ -22,17 +22,31 @@ class HistoryMeetingScreen extends StatelessWidget {
           );
         }
 
+        if (snapshot.hasError) {
+          return const Center(
+            child: Text('Error loading meeting history'),
+          );
+        }
+
+        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+          return const Center(
+            child: Text('No meetings found'),
+          );
+        }
+
         return ListView.builder(
-          itemCount: (snapshot.data! as dynamic).docs.length,
+          itemCount: snapshot.data!.docs.length,
           itemBuilder: (context, index) {
-            var snap = (snapshot.data! as dynamic).docs[index].data();
-            var date = (snap['createdAt'] as Timestamp).toDate();
+            var snap = snapshot.data!.docs[index].data();
+            var date = snap['createdAt'] != null 
+                ? (snap['createdAt'] as Timestamp).toDate()
+                : DateTime.now();
             var formattedDate = DateFormat.yMMMd().format(date);
             var formattedTime = DateFormat.Hm().format(date);
 
             return ListTile(
               title: Text(
-                'Room Name: ${snap['meetingName']}',
+                'Room Name: ${snap['meetingName'] ?? 'Unknown'}',
               ),
               subtitle: Text(
                 'Joined on $formattedDate at $formattedTime',
