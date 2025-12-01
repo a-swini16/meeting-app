@@ -3,9 +3,14 @@ import 'package:flutter/material.dart';
 import '../widgets/home_meeting_button.dart';
 import '../resources/jitsi_meet_methods.dart';
 
-class MeetingScreen extends StatelessWidget {
-  MeetingScreen({super.key});
+class MeetingScreen extends StatefulWidget {
+  const MeetingScreen({super.key});
 
+  @override
+  State<MeetingScreen> createState() => _MeetingScreenState();
+}
+
+class _MeetingScreenState extends State<MeetingScreen> {
   final JitsiMeetMethods _jitsiMeetMethods = JitsiMeetMethods();
 
   createNewMeeting() async {

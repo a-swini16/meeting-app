@@ -17,7 +17,7 @@ class JitsiMeetMethods {
     try {
       String name;
       if (username.isEmpty) {
-        name = _auth.currentUser!.displayName ?? 'User';
+        name = _auth.currentUser?.displayName ?? 'User';
       } else {
         name = username;
       }
@@ -28,34 +28,38 @@ class JitsiMeetMethods {
         configOverrides: {
           "startWithAudioMuted": isAudioMuted,
           "startWithVideoMuted": isVideoMuted,
+          "startScreenSharing": false,
+          "enableEmailInStats": false,
         },
         featureFlags: {
-          "unsaferoomwarning.enabled": false
+          "unsaferoomwarning.enabled": false,
+          "resolution": 720,
         },
         userInfo: JitsiMeetUserInfo(
           displayName: name,
-          email: _auth.currentUser!.email,
+          email: _auth.currentUser?.email ?? '',
         ),
       );
 
-      _addMeetingToHistory(roomName);
+      await _addMeetingToHistory(roomName);
       await _jitsiMeet.join(options);
     } catch (error) {
-      // Handle error appropriately in production
-      debugPrint("error: $error");
+      debugPrint("Jitsi Meet error: $error");
     }
   }
 
-  void _addMeetingToHistory(String roomName) async {
+  Future<void> _addMeetingToHistory(String roomName) async {
     try {
-      await _firestore
-          .collection('users')
-          .doc(_auth.currentUser!.uid)
-          .collection('meetings')
-          .add({
-        'meetingName': roomName,
-        'createdAt': DateTime.now(),
-      });
+      if (_auth.currentUser != null) {
+        await _firestore
+            .collection('users')
+            .doc(_auth.currentUser!.uid)
+            .collection('meetings')
+            .add({
+          'meetingName': roomName,
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+      }
     } catch (e) {
       debugPrint("Error adding meeting to history: $e");
     }

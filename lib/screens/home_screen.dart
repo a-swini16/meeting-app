@@ -22,10 +22,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   List<Widget> pages = [
-    MeetingScreen(),
+    const MeetingScreen(),
     const HistoryMeetingScreen(),
-    const Text('Contacts'),
-    CustomButton(text: 'Log Out', onPressed: () => FirebaseAuth.instance.signOut()),
+    const Center(child: Text('Contacts')),
+    Center(child: CustomButton(text: 'Log Out', onPressed: () => FirebaseAuth.instance.signOut())),
   ];
 
   @override
