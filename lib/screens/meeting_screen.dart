@@ -16,10 +16,14 @@ class _MeetingScreenState extends State<MeetingScreen> {
   createNewMeeting() async {
     var random = Random();
     String roomName = (random.nextInt(10000000) + 10000000).toString();
-    _jitsiMeetMethods.createMeeting(
-      roomName: roomName,
-      isAudioMuted: true,
-      isVideoMuted: true,
+    
+    // Create a simple room name that should work without lobby
+    String simpleRoomName = "Room$roomName";
+    
+    _jitsiMeetMethods.createNewMeeting(
+      roomName: simpleRoomName,
+      isAudioMuted: false, // Start with audio enabled for creator
+      isVideoMuted: false, // Start with video enabled for creator
     );
   }
 
